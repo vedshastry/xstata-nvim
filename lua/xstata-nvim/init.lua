@@ -126,7 +126,7 @@ local function send_linux(text, is_file_path)
       old_cb="$(xclip -o -selection clipboard)";
       this_window="$(xdotool getactivewindow)" &&
       stata_window="$(xdotool search --name --limit 1 "Stata/(IC|SE|MP)? 1[0-9]\.[0-9]")" &&
-      echo "do \`\"%s\"\'" | xclip -i -selection clipboard &&
+      echo "do \`\"%s\"'" | xclip -i -selection clipboard &&
       xdotool \
         keyup ctrl shift \
         windowactivate $stata_window \
