@@ -341,11 +341,10 @@ function M.run_paragraph()
   end
 end
 
--- Function to set up keymaps
 function M.setup_keymaps()
   -- Run current line or selection
-  vim.api.nvim_set_keymap('n', '<Leader>rl', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
-  vim.api.nvim_set_keymap('v', '<Leader>rl', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('n', '<Leader>rs', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('v', '<Leader>rs', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
   
   -- Run entire buffer
   vim.api.nvim_set_keymap('n', '<Leader>ra', '<cmd>lua require("xstata-nvim").run_all()<CR>', {noremap = true, silent = true})

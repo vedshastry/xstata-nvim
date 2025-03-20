@@ -79,10 +79,10 @@ require('xstata-nvim').setup({
 
 ### Default Keybindings
 
-- `<C-CR>` (Ctrl+Enter): Send the current line or visual selection to Stata
-- `<Leader>rp`: Run the previous command
+- `<Leader>rs`: Send the current line or visual selection to Stata
+- `<Leader>rc`: Run the previous command
 - `<Leader>ra`: Run all (entire buffer)
-- `<Leader>rr`: Run the current paragraph
+- `<Leader>rp`: Run the current paragraph
 
 ### Custom Keybindings
 
