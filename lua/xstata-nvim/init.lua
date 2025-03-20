@@ -1,6 +1,6 @@
 -- xstata-nvim.lua
 -- A Neovim plugin to send Stata code to a running Stata instance
--- Inspired by stata-exec for Atom/Pulsar
+-- Inspired by stata-exec for Atom/Pulsar by Kyle Barron
 
 local M = {}
 
@@ -125,7 +125,7 @@ local function send_linux(text, is_file_path)
     local cmd = string.format([[
       old_cb="$(xclip -o -selection clipboard)";
       this_window="$(xdotool getactivewindow)" &&
-      stata_window="$(xdotool search --name --limit 1 "Stata/(IC|SE|MP)? 1[0-9]\.[0-9]")" &&
+      stata_window="$(xdotool search --name --limit 1 "Stata/(IC|SE|MP)? [0-9][0-9]\.[0-9]")" &&
       echo "do \`\"%s\"'" | xclip -i -selection clipboard &&
       xdotool \
         keyup ctrl shift \
@@ -159,7 +159,7 @@ local function send_linux(text, is_file_path)
   local cmd = string.format([[
     old_cb="$(xclip -o -selection clipboard)";
     this_window="$(xdotool getactivewindow)" &&
-    stata_window="$(xdotool search --name --limit 1 "Stata/(IC|SE|MP)? 1[0-9]\.[0-9]")" &&
+    stata_window="$(xdotool search --name --limit 1 "Stata/(IC|SE|MP)? [0-9][0-9]\.[0-9]")" &&
     cat %s | xclip -i -selection clipboard &&
     xdotool \
       keyup ctrl shift \
@@ -343,18 +343,18 @@ end
 
 -- Function to set up keymaps
 function M.setup_keymaps()
-  -- Run current line or selection with Ctrl+Enter
-  vim.api.nvim_set_keymap('n', '<C-CR>', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
-  vim.api.nvim_set_keymap('v', '<C-CR>', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
-  
-  -- Run previous command
-  vim.api.nvim_set_keymap('n', '<Leader>rp', '<cmd>lua require("xstata-nvim").run_previous_command()<CR>', {noremap = true, silent = true})
+  -- Run current line or selection
+  vim.api.nvim_set_keymap('n', '<Leader>rl', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('v', '<Leader>rl', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
   
   -- Run entire buffer
   vim.api.nvim_set_keymap('n', '<Leader>ra', '<cmd>lua require("xstata-nvim").run_all()<CR>', {noremap = true, silent = true})
   
   -- Run current paragraph
-  vim.api.nvim_set_keymap('n', '<Leader>rr', '<cmd>lua require("xstata-nvim").run_paragraph()<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('n', '<Leader>rp', '<cmd>lua require("xstata-nvim").run_paragraph()<CR>', {noremap = true, silent = true})
+  
+  -- Run previous command
+  vim.api.nvim_set_keymap('n', '<Leader>rc', '<cmd>lua require("xstata-nvim").run_previous_command()<CR>', {noremap = true, silent = true})
 end
 
 -- Setup function to initialize the plugin
