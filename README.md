@@ -1,25 +1,20 @@
 # xstata-nvim: Neovim Plugin for Stata Integration
 
-This plugin allows you to send Stata code from Neovim to a running Stata instance, similar to how stata-exec works for Atom/Pulsar.
+A Neovim plugin that provides seamless integration with Stata, allowing you to send code from Neovim to a running Stata instance. Inspired by stata-exec for Atom/Pulsar.
 
 ## Features
 
-- Send the current line or visual selection to Stata
-- Run entire Stata do files
-- Run the current paragraph (block of text)
-- Automatically advance the cursor after sending a line
-- Skip comment lines when advancing
-- Cross-platform support (primary focus on Linux and macOS)
+- Send the current line, visual selection, or paragraph to Stata
+- Run entire Stata do files directly from Neovim
+- Automatically advance the cursor after sending code
+- Skip comments when advancing the cursor
+- Support for line continuations (`///`) and block comments
+- Optimized for Linux and macOS (Windows support coming soon)
 
 ## Prerequisites
 
-### macOS
-
-- For XQuartz: Ensure XQuartz is installed
-- For Stata: No additional dependencies
-
-### Linux
-
+Curently supported for Linux. Experimental implementation on Mac OS
+- Stata: StataSE, StataMP, or StataIC installed
 - `xclip` for clipboard management
 - `xdotool` for window management and keyboard control
 
@@ -37,7 +32,7 @@ sudo pacman -S xclip xdotool
 
 ## Installation
 
-### Using Lazy.nvim
+### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 Add the following to your Neovim configuration:
 
@@ -47,27 +42,35 @@ Add the following to your Neovim configuration:
   config = function()
     require('xstata-nvim').setup({
       -- Configuration options (defaults shown)
-      which_app = "StataMP", -- Options: StataMP, StataSE, StataIC, Stata, XQuartz
+      which_app = "StataMP", -- Options: StataMP, StataSE, StataIC, Stata
       advance_position = false, -- Move cursor to next line after sending current line
       skip_comments = true, -- Skip comment lines when advancing position
       focus_window = true, -- After code is sent, bring focus to Stata
-      paste_speed = 1.0, -- Only for XQuartz - adjust delay timing for pasting
     })
   end,
+  ft = { "stata", "do", "ado", "mata" }, -- Load only for Stata file types
+}
+```
+
+### Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
+
+```lua
+use {
+  'vedshastry/xstata-nvim',
+  config = function() require('xstata-nvim').setup() end,
+  ft = { "stata", "do", "ado", "mata" }
 }
 ```
 
 ### Manual Installation
 
-1. Create directories for the plugin:
+1. Clone the repository into your Neovim packages directory:
 
 ```bash
-mkdir -p ~/.config/nvim/lua/xstata-nvim
+git clone https://github.com/vedshastry/xstata-nvim.git ~/.local/share/nvim/site/pack/plugins/start/xstata-nvim
 ```
 
-2. Save the xstata-nvim.lua file to ~/.config/nvim/lua/xstata-nvim/init.lua
-
-3. Add the following to your init.lua:
+2. Add the following to your init.lua:
 
 ```lua
 require('xstata-nvim').setup({
@@ -77,24 +80,56 @@ require('xstata-nvim').setup({
 
 ## Usage
 
+### Default Commands
+
+The plugin provides the following commands:
+
+- `:StataRun` - Send the current line or visual selection to Stata
+- `:StataRunAll` - Run the entire current buffer as a do-file
+- `:StataRunParagraph` - Run the current paragraph (text block)
+- `:StataRunPrevious` - Re-run the previous command
+
 ### Default Keybindings
 
-- `<Leader>rs`: Send the current line or visual selection to Stata
-- `<Leader>rc`: Run the previous command
-- `<Leader>ra`: Run all (entire buffer)
-- `<Leader>rp`: Run the current paragraph
+- `<Leader>sr`: Run current line or visual selection
+- `<Leader>sa`: Run entire buffer as a do-file
+- `<Leader>sp`: Run current paragraph
+- `<Leader>sc`: Run previous command
 
 ### Custom Keybindings
 
 You can set up your own keybindings by adding them to your Neovim configuration:
 
 ```lua
--- Run current line or selection with a different key
-vim.api.nvim_set_keymap('n', '<F5>', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('v', '<F5>', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
+-- Run current line or selection with Ctrl+Enter
+vim.keymap.set('n', '<C-CR>', ':StataRun<CR>', {noremap = true, silent = true})
+vim.keymap.set('v', '<C-CR>', ':StataRun<CR>', {noremap = true, silent = true})
 
--- Run entire buffer
-vim.api.nvim_set_keymap('n', '<F6>', '<cmd>lua require("xstata-nvim").run_all()<CR>', {noremap = true, silent = true})
+-- Run entire buffer with Ctrl+Shift+D
+vim.keymap.set('n', '<C-S-d>', ':StataRunAll<CR>', {noremap = true, silent = true})
+
+-- Run paragraph with Ctrl+Alt+Enter
+vim.keymap.set('n', '<C-A-CR>', ':StataRunParagraph<CR>', {noremap = true, silent = true})
+```
+
+## Configuration Options
+
+You can customize the plugin behavior with these options:
+
+```lua
+require('xstata-nvim').setup({
+  -- Stata application to use (macOS)
+  which_app = "StataMP",  -- Options: StataMP, StataSE, StataIC, Stata
+
+  -- Automatically move cursor to next line after sending code
+  advance_position = false,
+
+  -- Skip comment lines when advancing cursor
+  skip_comments = true,
+
+  -- After sending code, focus Stata window
+  focus_window = true,
+})
 ```
 
 ## Troubleshooting
@@ -105,19 +140,21 @@ vim.api.nvim_set_keymap('n', '<F6>', '<cmd>lua require("xstata-nvim").run_all()<
 
 - If `xdotool` can't find the Stata window, try running the following command in the terminal to see if Stata is properly detected:
   ```bash
-  xdotool search --name --limit 1 "Stata/(IC|SE|MP)? 1[0-9]\.[0-9]"
+  xdotool search --name --limit 1 "Stata/"
   ```
-  If this command doesn't return a window ID, you may need to adjust the search pattern.
+  If this command doesn't return a window ID, you may need to adjust the search pattern in the `sender.lua` file.
 
 #### macOS
 
-- For XQuartz, you may need to adjust the paste_speed setting if the code isn't being pasted correctly.
 - Make sure the application name in `which_app` matches exactly with the name of your Stata application.
+- If code is not being sent to Stata, check that you have the necessary permissions for AppleScript to control Stata.
 
 ## Contributing
 
-Pull requests for bug fixes and new features are welcome!
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-GPL v3
+MIT License
+
+Copyright (c) 2025 Vedarshi Shastry
