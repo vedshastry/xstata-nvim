@@ -213,46 +213,7 @@ function M.run()
     -- No selection, use current line
     local cursor_pos = vim.api.nvim_win_get_cursor(0)
     local line = vim.api.nvim_buf_get_lines(current_buf, cursor_pos[1] - 1, cursor_pos[1], false)[1]
-    
-    -- Check if line contains /// continuation indicator
-    if line:match("///") then
-      -- This is a multi-line command with continuations
-      -- Need to collect all lines that form this command
-      local start_line = cursor_pos[1] - 1
-      local end_line = cursor_pos[1]
-      local total_lines = vim.api.nvim_buf_line_count(current_buf)
-      
-      -- Look backward for the beginning of the command
-      while start_line > 0 do
-        local prev_line = vim.api.nvim_buf_get_lines(current_buf, start_line - 1, start_line, false)[1]
-        if not prev_line:match("///") then
-          break
-        end
-        start_line = start_line - 1
-      end
-      
-      -- Look forward for the end of the command
-      while end_line < total_lines do
-        local next_line = vim.api.nvim_buf_get_lines(current_buf, end_line, end_line + 1, false)[1]
-        if not next_line or not next_line:match("///") then
-          break
-        end
-        end_line = end_line + 1
-      end
-      
-      -- Get all lines and concatenate them
-      local cmd_lines = vim.api.nvim_buf_get_lines(current_buf, start_line, end_line, false)
-      local full_cmd = table.concat(cmd_lines, "\n")
-      M.send_code(full_cmd, false)
-      
-      -- Advance to the line after the command if configured
-      if M.config.advance_position then
-        vim.api.nvim_win_set_cursor(0, {end_line + 1, 0})
-      end
-    else
-      -- Just a regular line
-      M.send_code(line, false)
-      
+    M.send_code(line, false)
       -- Advance position if configured
       if M.config.advance_position then
         local next_line = cursor_pos[1]
@@ -269,7 +230,6 @@ function M.run()
           end
         end
       end
-    end
   end
 end
 
