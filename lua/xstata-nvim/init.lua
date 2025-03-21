@@ -343,8 +343,8 @@ end
 
 function M.setup_keymaps()
   -- Run current line or selection
-  vim.api.nvim_set_keymap('n', '<Leader>rs', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
-  vim.api.nvim_set_keymap('v', '<Leader>rs', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('n', '<Leader>rr', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('v', '<Leader>rr', '<cmd>lua require("xstata-nvim").run()<CR>', {noremap = true, silent = true})
   
   -- Run entire buffer
   vim.api.nvim_set_keymap('n', '<Leader>ra', '<cmd>lua require("xstata-nvim").run_all()<CR>', {noremap = true, silent = true})
