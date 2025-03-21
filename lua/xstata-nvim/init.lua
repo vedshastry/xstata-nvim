@@ -207,11 +207,11 @@ function M.setup_keymaps()
   end, {})
 
   -- Map to user commands
-  vim.api.nvim_set_keymap('n', '<Leader>sr', ':StataRun<CR>', {noremap = true, silent = true})
-  vim.api.nvim_set_keymap('v', '<Leader>sr', ':StataRun<CR>', {noremap = true, silent = true})
-  vim.api.nvim_set_keymap('n', '<Leader>sa', ':StataRunAll<CR>', {noremap = true, silent = true})
-  vim.api.nvim_set_keymap('n', '<Leader>sp', ':StataRunParagraph<CR>', {noremap = true, silent = true})
-  vim.api.nvim_set_keymap('n', '<Leader>sc', ':StataRunPrevious<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('n', '<Leader>rr', ':StataRun<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('v', '<Leader>rr', ':StataRun<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('n', '<Leader>ra', ':StataRunAll<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('n', '<Leader>rp', ':StataRunParagraph<CR>', {noremap = true, silent = true})
+  vim.api.nvim_set_keymap('n', '<Leader>rc', ':StataRunPrevious<CR>', {noremap = true, silent = true})
 end
 
 -- Setup function to initialize the plugin

@@ -4,16 +4,13 @@ A Neovim plugin that provides seamless integration with Stata, allowing you to s
 
 ## Features
 
-- Send the current line, visual selection, or paragraph to Stata
-- Run entire Stata do files directly from Neovim
+- Send current dofile, selected line or paragraph to Stata
 - Automatically advance the cursor after sending code
-- Skip comments when advancing the cursor
-- Support for line continuations (`///`) and block comments
-- Optimized for Linux and macOS (Windows support coming soon)
+- Supports ` line /// continuations`) and `/* Block comments */`
+- Curently for Linux - Xorg. Experimental implementation on Mac OS
 
 ## Prerequisites
 
-Curently supported for Linux. Experimental implementation on Mac OS
 - Stata: StataSE, StataMP, or StataIC installed
 - `xclip` for clipboard management
 - `xdotool` for window management and keyboard control
@@ -43,22 +40,12 @@ Add the following to your Neovim configuration:
     require('xstata-nvim').setup({
       -- Configuration options (defaults shown)
       which_app = "StataMP", -- Options: StataMP, StataSE, StataIC, Stata
-      advance_position = false, -- Move cursor to next line after sending current line
+      advance_position = true, -- Move cursor to next line after sending current line
       skip_comments = true, -- Skip comment lines when advancing position
       focus_window = true, -- After code is sent, bring focus to Stata
     })
   end,
   ft = { "stata", "do", "ado", "mata" }, -- Load only for Stata file types
-}
-```
-
-### Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
-
-```lua
-use {
-  'vedshastry/xstata-nvim',
-  config = function() require('xstata-nvim').setup() end,
-  ft = { "stata", "do", "ado", "mata" }
 }
 ```
 
@@ -91,17 +78,17 @@ The plugin provides the following commands:
 
 ### Default Keybindings
 
-- `<Leader>sr`: Run current line or visual selection
-- `<Leader>sa`: Run entire buffer as a do-file
-- `<Leader>sp`: Run current paragraph
-- `<Leader>sc`: Run previous command
+- `<Leader>rr`: Run (current line or visual selection)
+- `<Leader>ra`: Run all (entire buffer as a dofile)
+- `<Leader>rp`: Run paragraph (until first empty line after current)
+- `<Leader>rc`: Run previous command
 
 ### Custom Keybindings
 
 You can set up your own keybindings by adding them to your Neovim configuration:
 
 ```lua
--- Run current line or selection with Ctrl+Enter
+-- Run current line or selection (when in visiual mode) with Ctrl+Enter
 vim.keymap.set('n', '<C-CR>', ':StataRun<CR>', {noremap = true, silent = true})
 vim.keymap.set('v', '<C-CR>', ':StataRun<CR>', {noremap = true, silent = true})
 
@@ -154,7 +141,4 @@ require('xstata-nvim').setup({
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
-
 MIT License
-
-Copyright (c) 2025 Vedarshi Shastry
